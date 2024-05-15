@@ -10,15 +10,16 @@ new class extends Component {
     public $perPage = 10;
      public function getSearchResults()
     {
+         if($this->search =='')
+        {
+            return [];
+        }
         $keywords = explode(' ', $this->search);
-
-        // Start the query
         $query = Product::query();
-
-        // Add a LIKE condition for each keyword
         foreach ($keywords as $keyword) {
             $query->where('name', 'LIKE', '%' . $keyword . '%');
         }
+       
         return $query->orderBy('created_at','DESC')->get();
     }
     public function with()
@@ -72,8 +73,9 @@ new class extends Component {
                     </div>
                     <div class="bg-white overflow-auto">
                         <div class="container mx-auto px-4">
+                        <p class="mb-2">Showing  {{count($products)}} Results</p>
                             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                            @if($search!='')
+                            
                                 @foreach($products as $product)
                                 <div class="bg-white shadow-md rounded-lg overflow-hidden">
                                     <img class="w-full h-48 object-cover" src="{{ $product->image ? asset('storage/' . $product->image) : asset('storage/products/default.jpg') }}" alt="{{ $product->name }}">
@@ -83,7 +85,7 @@ new class extends Component {
                                     </div>
                                 </div>
                                 @endforeach
-                            @endif
+                           
                             </div>
                     </div>
 
